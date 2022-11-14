@@ -2,6 +2,7 @@ from flask_restful import Resource
 from flask import request
 import boto3
 import pandas as pd
+import dotenv
 import os
 
 
@@ -20,11 +21,13 @@ class HomeResource(Resource):
 def get_csv(bucket_name, object_key):
     """ Conects to a bucket and get a csv object,
         converts into a new csv and return this new csv"""
+    dotenv.load_dotenv(dotenv.find_dotenv())
     client_s3 = boto3.client('s3',
                              region_name='sa-east-1',
-                             aws_access_key_id=os.environ.get(
+                             aws_access_key_id=os.getenv(
                                  'aws_access_key_id'),
-                             aws_secret_access_key=os.environ().get('secret_access_key'))
+                             aws_secret_access_key=os.getenv(
+                                 'secret_access_key'))
     # get csv object
     csv_obj = client_s3.get_object(Bucket=bucket_name, Key=object_key)
     # raw text
@@ -58,9 +61,9 @@ def save_in_db():
             valor_do_emprestimo=csv.loc[row, 'Valor do Empréstimo'],
             valor_parcela=csv.loc[row, 'Parcela R$'],
             total_parcelas=csv.loc[row, 'Total Parcelas'],
-            data_de_emissao=csv.loc[row, 'Data de Emissăo'],
+            data_de_emissao=csv.loc[row, 'Data de Emissão'],
             data_de_vencimento=csv.loc[row, 'Data de Vencimento'],
-            preco_de_aquisicao=csv.loc[row, 'Preço de Aquisiçăo'])
+            preco_de_aquisicao=csv.loc[row, 'Preço de Aquisição'])
 
         db.session.add(new_record)
-        db.commit()
+        db.session.commit()
