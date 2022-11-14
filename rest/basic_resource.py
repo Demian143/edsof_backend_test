@@ -45,25 +45,36 @@ def save_in_db():
     csv = pd.read_csv('temp.csv', delimiter=';')
 
     for row in range(len(csv)):
+        # breakpoint()
+        dv = csv.loc[row, 'Data de Emissão'].split('/')
+        dv.reverse()
+        dv = f'{dv[0]}/{dv[1]}/{dv[2]}'
+
+        de = csv.loc[row, 'Data de Emissão'].split('/')
+        de.reverse()
+        de = f'{de[0]}/{de[1]}/{de[2]}'
+
         new_record = CessaoFundo(
             originador=csv.loc[row, 'Originador'],
             doc_originador=csv.loc[row, 'Doc Originador'],
             cedente=csv.loc[row, 'Cedente'],
-            doc_cedente=csv.loc[row, 'Doc Cedente'],
-            ccb=csv.loc[row, 'CCB'],
-            id_externo=csv.loc[row, 'Id'],
+            doc_cedente=int(csv.loc[row, 'Doc Cedente']),
+            ccb=int(csv.loc[row, 'CCB']),
+            id_externo=int(csv.loc[row, 'Id']),
             cliente=csv.loc[row, 'Cliente'],
-            cpf_cnpj=csv.loc[row, 'CPF/CNPJ'],
+            cpf_cnpj=csv.loc[row, 'CPF/CNPJ'],  # prestar atençao tipo str
             endereco=csv.loc[row, 'Endereço'],
-            cep=csv.loc[row, 'CEP'],
+            cep=str(csv.loc[row, 'CEP']),
             cidade=csv.loc[row, 'Cidade'],
             uf=csv.loc[row, 'UF'],
-            valor_do_emprestimo=csv.loc[row, 'Valor do Empréstimo'],
-            valor_parcela=csv.loc[row, 'Parcela R$'],
-            total_parcelas=csv.loc[row, 'Total Parcelas'],
-            data_de_emissao=csv.loc[row, 'Data de Emissão'],
-            data_de_vencimento=csv.loc[row, 'Data de Vencimento'],
-            preco_de_aquisicao=csv.loc[row, 'Preço de Aquisição'])
+            valor_do_emprestimo=float(
+                csv.loc[row, 'Valor do Empréstimo'].replace(',', '.')),
+            valor_parcela=float(csv.loc[0, 'Parcela R$'].replace(',', '.')),
+            total_parcelas=int(csv.loc[row, 'Total Parcelas']),
+            parcela=int(csv.loc[row, 'Parcela #']),
+            data_de_emissao=de,
+            data_de_vencimento=dv,
+            preco_de_aquisicao=float(csv.loc[row, 'Preço de Aquisição']))
 
         db.session.add(new_record)
         db.session.commit()
