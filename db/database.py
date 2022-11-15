@@ -19,21 +19,17 @@ class CessaoFundo(db.Model):
     cep = db.Column(db.String(50), nullable=False)
     cidade = db.Column(db.String(250), nullable=False)
     uf = db.Column(db.String(50), nullable=False)
-
     # VALOR_DO_EMPRESTIMO DECIMAL(10,2) NOT NULL
     valor_do_emprestimo = db.Column(
         db.Float, nullable=False)
-
     # VALOR_PARCELA DECIMAL(10,2) NOT NULL
     valor_parcela = db.Column(db.Float, nullable=False)
     total_parcelas = db.Column(db.Integer, nullable=False)
     parcela = db.Column(db.Integer, nullable=False)
-
-    # prestar atençao no formatode data
+    # prestar atençao no formato de data
     data_de_emissao = db.Column(
         db.Date, default=datetime.datetime.now(), nullable=False)
     data_de_vencimento = db.Column(
         db.Date, default=datetime.datetime.now(), nullable=False)
-
     # PRECO_DE_AQUISICAO DECIMAL(10,2) NOT NULL
     preco_de_aquisicao = db.Column(db.Float, nullable=False)
